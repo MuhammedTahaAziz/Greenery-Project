@@ -1,0 +1,21 @@
+.full-shadow{
+  box-shadow: 0px 0px 3px 3px #e3e4e7;
+}
+
+.side-shadow{
+  box-shadow: 4px 4px 8px 1px #121212;
+}
+
+.neomorphism{
+  box-shadow: 4px 4px 6px 2px #cbd5e1, -4px -4px 6px 2px #f8fafc;
+}
+.no-spinner::-webkit-outer-spin-button,
+.no-spinner::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+.no-spinner[type=number] {
+    -moz-appearance: textfield;
+}

@@ -1,0 +1,11 @@
+.full-shadow{
+    box-shadow: 0px 0px 6px 2px #e3e4e7;
+}
+
+.neomorphism{
+    box-shadow: 4px 4px 6px 2px #cbd5e1, -4px -4px 6px 8px #f8fafc;
+}
+
+.mobile-neomorphism{
+    box-shadow: 2px 2px 3px 0px #cbd5e1, -2px -2px 3px 0px #f8fafc;
+}
