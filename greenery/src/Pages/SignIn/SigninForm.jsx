@@ -12,12 +12,25 @@ export let adminPassword = "Admin1234";
 
 export default function SigninForm({ className = "", children, method }) {
 
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const handleEmailChange = (event) => {
+    const emailValue = event.target.value.replace(/[^0-9a-z.@]/g, ""); // Remove any characters that are not numbers or lowercase letters
+    setEmail(emailValue); // Update the state with only numeric characters
+};
+  const handlePasswordChange = (event) => {
+    const passwordValue = event.target.value.replace(
+        /[^0-9A-Za-z.-\s&$@]/g,
+        ""
+    ); // Remove any non-numeric characters
+    setPassword(passwordValue); // Update the state with only numeric characters
+};
+
   const { setUser, setToken } = useStateContext();
   const navigate = useNavigate();
   const user = {
-    email: username,
+    email: email,
     password: password
   }
 
@@ -70,16 +83,16 @@ export default function SigninForm({ className = "", children, method }) {
         <div className="w-10/12 mx-auto gap-4 grid">
           <div className="w-full mx-auto">
             <label htmlFor="Username" className="w-full text-white font-bold">
-              Username
+              Email
             </label>
             <input
               className="w-full h-10 bg-white/20 outline-none px-2  rounded border-l-[1px] border-t-[1px] border-stone-300 text-white font-semibold placeholder:text-white shadow-xl shadow-black/20"
-              placeholder={"Username"}
-              type={"text"}
-              id={"signinUsername"}
-              name={`signinUsername`}
-              value={username}
-              onChange={(event) => setUsername(event.target.value)}
+              placeholder={"Email"}
+              type={"email"}
+              id={"Email"}
+              name={`Email`}
+              value={email}
+              onChange={handleEmailChange}
               required
             />
           </div>
@@ -97,7 +110,7 @@ export default function SigninForm({ className = "", children, method }) {
               id={"signinPassword"}
               name={`signinPassword`}
               value={password}
-              onChange={(event) => setPassword(event.target.value)}
+              onChange={handlePasswordChange}
               required
             />
             <Link to={"/ForgetPassword"}>

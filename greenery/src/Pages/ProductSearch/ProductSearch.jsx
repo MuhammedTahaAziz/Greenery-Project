@@ -20,18 +20,16 @@ export default function ProductSearch() {
         }, []);
 
         const fetchData = async () => {
-            const payload = {
-                userID: parseInt(localStorage.getItem("ID")),
-            };
+            
             try {
                 axiosClient
-                    .post("/productFavourite", payload)
+                    .get("/product_filter_name")
                     .then(({ data }) => {
-                        console.log(data);
-                        setPosts(data.products);
+                        console.log(data.product);
+                        setPosts(data.product);
                         setDataFetched(true);
                         setLoading(false);
-                        setFilteredProducts(data.products);
+                        setFilteredProducts(data.product);
                     })
                     .then((error) => {
                         setLoading(false);
@@ -46,9 +44,10 @@ export default function ProductSearch() {
             const searchValue = event.target.value;
             setSearchTerm(searchValue);
             const filtered = posts.filter((product) =>
-                product.title.toLowerCase().includes(searchValue.toLowerCase())
+                product.name.toLowerCase().includes(searchValue.toLowerCase())
             );
             setFilteredProducts(filtered);
+            console.log(filtered);
         };
         handleSearchChangeValue = handleSearchChange;
     };

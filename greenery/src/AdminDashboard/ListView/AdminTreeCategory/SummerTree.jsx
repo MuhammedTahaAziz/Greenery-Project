@@ -23,7 +23,7 @@ export default function SummerTree() {
         try {
             axiosClient
                 .get("/product_filter_name")
-                .then(({data}) => {
+                .then(({ data }) => {
                     console.log(data);
                     setPosts(data);
                     setDataFetched(true);
@@ -37,6 +37,20 @@ export default function SummerTree() {
             // setLoading(false);
             // setLoading(false);
         }
+    };
+    const deleteData = async (productId) => {
+        const payload = {
+            id: productId,
+        };
+        console.log(payload);
+        axiosClient
+            .post("/delete", payload)
+            .then(({ data }) => {
+                console.log(data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     };
 
     const summerTrees = posts.filter(
@@ -103,7 +117,13 @@ export default function SummerTree() {
                                               className="size-full"
                                           />
                                       </Link>
-                                      <Button className="size-7 rounded-sm ml-2">
+                                      <Button
+                                          className="size-7 rounded-sm ml-2"
+                                          onClick={() => {
+                                              setIdProduct(post.id) ||
+                                                  deleteData(post.id);
+                                          }}
+                                      >
                                           <img
                                               src={DeleteProductImage}
                                               alt=""

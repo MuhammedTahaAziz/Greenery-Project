@@ -20,6 +20,8 @@ import ViewProduct from "./AdminDashboard/ListView/ViewProduct.jsx";
 import Account from "./Pages/Account/Account.jsx";
 import Contact from "./Pages/Contact/Contact.jsx";
 import MyOrders from "./Pages/MyOrders/MyOrders.jsx";
+import ResetPassword from "./Pages/ResetPassword/ResetPassword.jsx";
+import OrderList from "./AdminDashboard/OrderList/OrderList.jsx";
 
 const router = createBrowserRouter([
   {
@@ -92,6 +94,10 @@ const router = createBrowserRouter([
         path: "/admin/ViewProduct",
         element: <ViewProduct />,
       },
+      {
+        path: "/admin/OrderList",
+        element: <OrderList />,
+      },
     ],
   },
   {
@@ -109,6 +115,10 @@ const router = createBrowserRouter([
       {
         path: "/ForgetPassword",
         element: <ForgetPassword />,
+      },
+      {
+        path: "/ResetPassword",
+        element: <ResetPassword />,
       },
     ],
   },

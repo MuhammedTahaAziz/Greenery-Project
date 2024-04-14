@@ -1,7 +1,15 @@
 import useCardShowStore from "src/Store/useCardShowStore";
+import emailjs from '@emailjs/browser';
 
 export default function Contact() {
     const { setOpen } = useCardShowStore();
+
+    const sendEmail = (e) => {
+        e.preventDefault();
+        emailjs.sendForm('service_qa5v8i1', 'template_lrwk6xb', e.target, 'avkrOTF_mEMLrUxoB');
+        alert("Email has been sent")
+    }
+
     return (
         <div
             className="w-full h-[31rem] relative min-h-screen-mt mt-[5.0125rem] bg-transparent overflow-hidden"
@@ -18,8 +26,8 @@ export default function Contact() {
                 <p className="text-[7rem] text-white font-semibold">
                     Contact Us
                 </p>
-                <div className="w-96 flex flex-col gap-5">
-                    <div className="w-full mx-auto">
+                <form className="w-96 flex flex-col gap-5" onSubmit={sendEmail}>
+                    {/* <div className="w-full mx-auto">
                         <label
                             htmlFor="Username"
                             className="w-full text-white font-bold"
@@ -36,7 +44,7 @@ export default function Contact() {
                             //   onChange={(event) => setUsername(event.target.value)}
                             required
                         />
-                    </div>
+                    </div> */}
                     <div className="w-full mx-auto">
                         <label
                             htmlFor="Username"
@@ -46,13 +54,13 @@ export default function Contact() {
                         </label>
                         <input
                             className="w-full h-10 bg-white/20 outline-none px-2  rounded border-l-[1px] border-t-[1px] border-stone-300 text-white font-semibold placeholder:text-white shadow-xl shadow-black/20"
-                            placeholder={"Username"}
+                            placeholder={"Your Email"}
                             type={"text"}
-                            id={"signinUsername"}
-                            name={`signinUsername`}
+                            id={"emailFrom"}
+                            name={`email_from`}
                             //   value={username}
                             //   onChange={(event) => setUsername(event.target.value)}
-                            required
+                            // required
                         />
                     </div>
                     <div className="w-full mx-auto">
@@ -67,10 +75,19 @@ export default function Contact() {
                             id="message"
                             cols="30"
                             rows="10"
-                            className="w-full h-32 bg-white/20 outline-none px-2 py-2 rounded border-l-[1px] border-t-[1px] border-stone-300 text-white font-semibold placeholder:text-white shadow-xl shadow-black/20"
+                            placeholder="Write your message"
+                            className="w-full h-32 bg-white/20 outline-none px-2 py-2 rounded border-l-[1px] border-t-[1px] border-stone-300 text-white font-semibold placeholder:text-white shadow-xl shadow-black/20 resize-none overflow-x-hidden scrollbar-hide"
                         ></textarea>
                     </div>
-                </div>
+                    <button
+                        type="submit"
+                        className="w-full h-12 mt-4 rounded text-center mx-auto text-xl text-white font-bold bg-white/35 shadow-xl col-span-2"
+                        id="signupSendBtn"
+                        name="signupSendBtn"
+                    >
+                        SIGN UP
+                    </button>
+                </form>
             </div>
         </div>
     );

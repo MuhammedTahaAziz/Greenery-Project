@@ -8,7 +8,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 class CustomResetPasswordNotification extends ResetPasswordNotification
 {
     public function toMail($notifiable)
-    {$url = url('/register',
+    {$url = url('http://localhost:3001/ResetPassword',
     //      [
     //     'email' => $notifiable->email,
     //     'token' => $this->token,

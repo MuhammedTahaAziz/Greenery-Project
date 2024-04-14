@@ -20,20 +20,23 @@ export default function Sidebar() {
       <div className="size-40 ml-8">
         <img src={Admin} alt="" className="size-full" />
       </div>
-      <div className="flex flex-col items-center mt-6 gap-10">
-        <Link to={"/admin/ViewUsers"}>
+      <div className="flex flex-col items-center gap-2">
+        <Link to={"/admin/ViewUsers"} className="w-60 h-14 bg-transparent text-white hover:bg-white hover:text-black focus:bg-white focus:text-black flex items-center translate-x-10 pl-[2.375rem]">
           <span>View Users</span>
         </Link>
-        <Link to={"/admin/ViewProduct"}>
+        <Link to={"/admin/ViewProduct"}  className="w-60 h-14 bg-transparent text-white hover:bg-white hover:text-black focus:bg-white focus:text-black flex items-center translate-x-10 pl-7">
           <span>View Product</span>
         </Link>
-        <Link to={"/admin/AddProduct"}>
+        <Link to={"/admin/AddProduct"}  className="w-60 h-14 bg-transparent text-white hover:bg-white hover:text-black focus:bg-white focus:text-black flex items-center translate-x-10 pl-8">
           <span>Add Product</span>
         </Link>
-        <Link to={"/admin/EditProduct"}>
+        {/* <Link to={"/admin/EditProduct"}  className="w-60 h-14 bg-transparent text-white hover:bg-white hover:text-black focus:bg-white focus:text-black flex items-center translate-x-10 pl-[2.125rem]">
           <span>Edit Product</span>
+        </Link> */}
+        <Link to={"/admin/OrderList"}  className="w-60 h-14 bg-transparent text-white hover:bg-white hover:text-black focus:bg-white focus:text-black flex items-center translate-x-10 pl-11">
+          <span>Order List</span>
         </Link>
-        <Link to={"/SignIn"} onClick={onsubmit}>
+        <Link to={"/SignIn"}  className="w-60 h-14 bg-transparent text-white hover:bg-white hover:text-black focus:bg-white focus:text-black flex items-center translate-x-10 pl-12" onClick={onsubmit}>
           <span>Sign Out</span>
         </Link>
       </div>

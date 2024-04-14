@@ -47,6 +47,7 @@ public function register(Request $request){
             'password' => Hash::make($request->password),
             'address' => $request->address,
             'email_verified_at' => NULL,
+           'remember_token' => Str::random(60),
         ]);
 
         if ($request->hasFile('image')) {
@@ -166,37 +167,57 @@ $validator=validator::make($request->all(),[
  }
 
 
-
- 
-
  public function reset(Request $request) {
-    $validator = Validator::make($request->all(), [
-        'token' => 'required',
-        'email' => 'required|email|exists:users,email',
-        'password' => 'required|min:6',
-    ]);
+        // $validator = Validator::make($request->all(), [
+        //     'email' => 'required|email|exists:users,email',
+        //     'password' => 'required|min:6',
+        // ]);
+    
+        // if ($validator->fails()) {
+        //     return response()->json(["error" => __("Validation failed")], 400);
+        // }
+    
+        // $email = $request->email;
+        // $user = User::where('email', $email)->first(); // Fetch the user
+    
+        // if(!$user) {
+        //     return response()->json(["error" => __("User not found")], 404);
+        // }
+    
+        // $user->password = Hash::make($request->password); // Update the password
+    
+        // $user->save(); // Save the changes to the database
+    
+        // return response()->json(["success" => __("Password reset successfully!")], 200);
+    
 
-    if (!$validator->fails()) {
-        $status = Password::reset(
-            $request->only('email', 'password', 'token'),
-            function ($user) use ($request) {
-                $user->forceFill([
-                    'password' => Hash::make($request->password),
-                    'remember_token' => Str::random(60),
-                ])->save();
-                $user->tokens()->delete();
-                event(new PasswordReset($user));
+        $validator = Validator::make($request->all(), [
+            'token' => 'required',
+            'email' => 'required|email|exists:users,email',
+            'password' => 'required|min:6',
+        ]);
+    
+        if (!$validator->fails()) {
+            $status = Password::reset(
+                $request->only('email', 'password', 'token'),
+                function ($user) use ($request) {
+                    $user->forceFill([
+                        'password' => Hash::make($request->password),
+                        'remember_token' => Str::random(60),
+                    ])->save();
+                    $user->tokens()->delete();
+                    event(new PasswordReset($user));
+                }
+            );
+    
+            if ($status == Password::PASSWORD_RESET) {
+                return response()->json(["success" => __("Password reset successfully!")], 200);
+            } else {
+                return response()->json(["error" => __("Something went wrong!")], 401);
             }
-        );
-
-        if ($status == Password::PASSWORD_RESET) {
-            return response()->json(["success" => __("Password reset successfully!")], 200);
         } else {
-            return response()->json(["error" => __("Something went wrong!")], 401);
+            return response()->json(["error" => $validator->errors()->all()], 401);
         }
-    } else {
-        return response()->json(["error" => $validator->errors()->all()], 401);
-    }
 }
 
 

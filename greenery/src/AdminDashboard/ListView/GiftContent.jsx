@@ -22,7 +22,7 @@ export default function GiftContent() {
         try {
             axiosClient
                 .get("/product_filter_name")
-                .then(({data}) => {
+                .then(({ data }) => {
                     console.log(data);
                     setPosts(data);
                     setDataFetched(true);
@@ -37,7 +37,21 @@ export default function GiftContent() {
             // setLoading(false);
         }
     };
-
+    const deleteData = async (productId) => {
+        const payload = {
+            id: productId,
+        };
+        console.log(payload);
+        axiosClient
+            .post("/delete", payload)
+            .then(({ data }) => {
+                console.log(data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    };
+    
     const Gifts = posts.filter((post) => post.category_name === "gift");
 
     return (
@@ -100,7 +114,13 @@ export default function GiftContent() {
                                               className="size-full"
                                           />
                                       </Link>
-                                      <Button className="size-7 rounded-sm ml-2">
+                                      <Button
+                                          className="size-7 rounded-sm ml-2"
+                                          onClick={() => {
+                                              setIdProduct(post.id) ||
+                                                  deleteData(post.id);
+                                          }}
+                                      >
                                           <img
                                               src={DeleteProductImage}
                                               alt=""

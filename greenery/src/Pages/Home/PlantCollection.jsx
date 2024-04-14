@@ -1,11 +1,9 @@
 import { Link } from "react-router-dom";
 import useSeasonCategory from "src/Store/useSeasonCategory";
-import useDiscount from "src/Store/useDiscount";
 import useProductCategory from "src/Store/useProductCategory";
 
 export default function PlantCollection() {
   const { isSeasonCategory, setSeasonCategory } = useSeasonCategory();
-  const { isDiscount } = useDiscount();
   const { isProductCategory, setProductCategory } = useProductCategory();
 
   return (

@@ -9,15 +9,16 @@ class shop extends Model
 {
     use HasFactory;
     protected $table ='shop';
-    public $timestamps = false;
+
 
 
     
     public function scopeOforder_id($query, $id) {
         if ($id) {
             $orderIds = $query->where('id_user', $id)
-                              ->orderBy('order_id') // Ensure only unique order_id values
-                              ->get();
+            ->orderByRaw('TIME(dateTimeCreate) DESC') 
+            ->orderByRaw('DATE(dateTimeCreate) DESC') 
+            ->get();
     
             // Transform the plucked array into an associative array
             $keyedOrderIds = ['order_id' => $orderIds->all()];
@@ -30,7 +31,12 @@ class shop extends Model
 
         public function scopeOfshop($quere,$user_id,$order_id){
             if ($user_id && $order_id) {
-                return $quere->where('id_user', $user_id)->where('order_id', $order_id)->get();
+                return $query->where('id_user', $user_id)
+                ->where('order_id', $order_id)
+                 ->orderByRaw('TIME(dateTimeCreate) DESC') // Order by time component in descending order
+
+                ->orderByRaw('DATE(dateTimeCreate) DESC') // Order by date component in descending order
+                ->get();
             } else {
                 return collect(); 
             }}

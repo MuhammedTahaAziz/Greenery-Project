@@ -92,7 +92,7 @@ export default function ProductNav() {
                             <div
                                 className="w-full h-10 bg-gray-50 hover:bg-gray-200 pl-4 flex justify-start items-center"
                                 onClick={() =>
-                                    setSeasonCategory("fourseasons") ||
+                                    setSeasonCategory("fourseason") ||
                                     setDiscount(false) ||
                                     setSettingOpen(!settingOpen)
                                 }

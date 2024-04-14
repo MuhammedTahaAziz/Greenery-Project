@@ -12,7 +12,7 @@ export default function AddProduct() {
     season: "spring",
     hasSess: true,
     price: null,
-    discount: null,
+    discount: "",
     quantity: null,
   });
   
@@ -46,7 +46,7 @@ export default function AddProduct() {
     payload.append('price', parseInt(productData.price));
     payload.append('quantity', parseInt(productData.quantity));
 
-    if(productData.discount.length==0){
+    if(productData.discount.length==""){
       payload.append('discount', parseInt(0));
     }else{
       payload.append('discount', parseInt(productData.discount));

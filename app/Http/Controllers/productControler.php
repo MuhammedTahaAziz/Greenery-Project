@@ -45,7 +45,7 @@ class productControler extends Controller
     
         // Return the JSON response
         // return $jsonData;
-        return $products;
+        return response()->json(['product'=>$products]);
 
         
     }
@@ -109,9 +109,20 @@ class productControler extends Controller
 
     if (!$validator->fails()) {
         $products = $request->input('products');
-        $rand_id=rand(1,10000);
+        // $rand_id=rand(1,10000);
 
+        $pr = Shop::orderBy('order_id', 'desc')->first();
+
+
+        if ($pr == null) {
+            $order = 1;
+        } else {
+            $order = $pr->order_id + 1;
+        }
+        
         foreach ($products as $productData) {
+            
+          
             $validatorProduct = Validator::make($productData, [
                 'id' => 'required',
                 'name' => 'required|max:20',
@@ -124,8 +135,20 @@ class productControler extends Controller
             if ($validatorProduct->fails()) {
                 return response()->json(['error' => $validatorProduct->errors()->all()], 401);
             }
+            $product = Product::find($productData['id']);
 
-            
+
+            if ($product->Quantity < $productData['Quantity']||$product->Quantity==0) {  
+                // Quantity of the product is less than the requested quantity
+                return response()->json(["error" => "Product {$productData['name']} not available in sufficient quantity"]);
+            }else{
+            // $pr = Shop::latest()->first();
+          
+ $product = product::find($productData['id']);
+            $newDecreasedQuantity = $product->Quantity - $productData['Quantity'];
+            $product->Quantity = $newDecreasedQuantity;
+            $product->save();
+
             // Insert new shop item
             shop::insert([
                 'id_shop' => $productData['id'],
@@ -135,23 +158,19 @@ class productControler extends Controller
                 'Discound' => $productData['Discound'],
                 'Quantity' => $productData['Quantity'],
                 'id_user' => $request->user_id,
-                'order_id'=> $rand_id,
+                'order_id'=> $order,
                 'image'=>$productData['image']
-            ]);
+                  ]);
 
-            // Update quantity of product
-            $product = product::find($productData['id']);
-            $newDecreasedQuantity = $product->Quantity - $productData['Quantity'];
-            $product->Quantity = $newDecreasedQuantity;
-            $product->save();
-
-                  }
+                  // Update quantity of product
+           
+                
                   if (shop_user::where('id_user', $request->user_id)->exists()) {
                             shop_user::where('id_user', $request->user_id)->delete();}else{
                                 return response()->json(['success' => "shopping cart is empty "], 200);
 
                             }
-                  return response()->json(['success' => true], 200);
+                  return response()->json(['success' => true], 200);  }}
         } else {
             return response()->json(['error' => [$validator->errors()->all(),"please take a product " ]], 401);
         }
@@ -301,7 +320,8 @@ public function get_order(Request $request){
     }
 }
 
-    
+     
+
 
 
 

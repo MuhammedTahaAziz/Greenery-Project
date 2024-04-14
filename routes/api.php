@@ -34,6 +34,7 @@ Route::group(['middleware'=>['json']],function(){
         Route::Post('/quantity',[productControler::class,'shop_us_pro_get_quanity']);
     });
     Route::post('insert', [AdminController::class, 'insert']);
+    Route::get('Getshop', [AdminController::class, 'get_shop']);
 
 
     Route::group(['middleware' => ['auth:sanctum', 'role:admin']], function(){
@@ -41,6 +42,7 @@ Route::group(['middleware'=>['json']],function(){
         Route::get('/viewUsers', [AdminController::class, 'ViewUsers']);
         Route::post('delete',[AdminController::class,'Delete']);
         Route::post('update',[AdminController::class,'update']);
+    
     });
 
     Route::post('/register',[authenticate::class,'register']);

@@ -9,24 +9,21 @@ import axiosClient from "src/axios-client";
 import { useStateContext } from "src/Components/ContextProvider";
 import useCardShowStore from "src/Store/useCardShowStore";
 
-function postReturn(post, isProductCategory, isSeasonCategory, isDiscount) {
-    // const onHeart = (id) => {
-    //   console.log();
-    //     const payload = {
-    //         user_id: localStorage.getItem("ID"),
-    //         favorate_id: id,
-    //     };
-    //     console.log(payload);
-    //     axiosClient
-    //         .post("/fav_us_pro_set", payload)
-    //         .then(({data}) => {
-    //             console.log(data);
-    //             console.log(data);
-    //         })
-    //         .catch((error) => {
-    //             console.error(error);
-    //         });
-    // };
+function checkFavourite(postID, favourite) {
+    let check = false;
+    favourite.forEach((favourite) => {
+        if (favourite.id === postID) {check = true}
+    });
+    return check;
+}
+
+function postReturn(
+    post,
+    isProductCategory,
+    isSeasonCategory,
+    isDiscount,
+    favorate
+) {   
 
     if (isProductCategory === post.category_name) {
         if (isSeasonCategory === "all" && isDiscount === false) {
@@ -39,6 +36,7 @@ function postReturn(post, isProductCategory, isSeasonCategory, isDiscount) {
                     price={post.price}
                     discount={post.Discound}
                     state={post.is_favorited}
+                    savedd={checkFavourite(post.id,favorate)}// daby awha bkayyyy
                 ></Post>
             );
         }
@@ -52,6 +50,7 @@ function postReturn(post, isProductCategory, isSeasonCategory, isDiscount) {
                     price={post.price}
                     discount={post.Discound}
                     state={post.is_favorited}
+                    savedd={checkFavourite(post.id,favorate)}// daby awha bkayyyy
                 ></Post>
             );
         }
@@ -65,6 +64,7 @@ function postReturn(post, isProductCategory, isSeasonCategory, isDiscount) {
                     price={post.price}
                     discount={post.Discound}
                     state={post.is_favorited}
+                    savedd={checkFavourite(post.id,favorate)}// daby awha bkayyyy
                 ></Post>
             );
         }
@@ -75,37 +75,58 @@ function postReturn(post, isProductCategory, isSeasonCategory, isDiscount) {
 
 export default function Product() {
     const [dataFetched, setDataFetched] = useState(false);
-    // const [posts, setPosts] = useState([]);
+    const [posts, setPosts] = useState([]);
     const { products, setProduct } = useStateContext();
     const [load, setLoading] = useState(false);
     const { isSeasonCategory } = useSeasonCategory();
     const { isDiscount } = useDiscount();
     const { isProductCategory } = useProductCategory();
 
-    const { isOpen , setOpen } = useCardShowStore();
+    const [favorate, setFavorate] = useState([]);
+
+    const { isOpen, setOpen } = useCardShowStore();
 
     useEffect(() => {
         fetchData();
+        fetchFavourite();
     }, []);
 
-
     const fetchData = async () => {
-        const payload = {
-            userID: parseInt(localStorage.getItem("ID")),
-        };
+        setLoading(true);
         try {
-            console.log(payload);
             axiosClient
-                .post("/productFavourite", payload)
+                .get("/product_filter_name")
                 .then(({ data }) => {
-                    setProduct(data.products);
-                    console.log(data.products);
+                    console.log(data.product);
+                    setPosts(data.product);
                     setDataFetched(true);
                     setLoading(false);
                 })
                 .then((error) => {
+                    setLoading(false);
+                    console.error(error);
+                });
+        } catch (error) {
+            setLoading(false);
+        }
+    };
+
+    const fetchFavourite = async () => {
+        setLoading(true);
+        const payload = {
+            id: parseInt(localStorage.getItem("ID")),
+        };
+        try {
+            console.log(payload);
+            axiosClient
+                .post("/fav_us_pro_get", payload)
+                .then(({ data }) => {
+                    setFavorate(data.product);
+                    setLoading(false);
+                })
+                .then((error) => {
                     // setLoading(false);
-                    // console.error(error)
+                    console.error(error);
                 });
         } catch (error) {
             // setLoading(false);
@@ -113,18 +134,18 @@ export default function Product() {
         }
     };
 
-    // console.log(posts);
+    console.log(favorate);
 
     return (
         <div
             className="w-5/6 h-full mx-auto bg-transparent"
             onClick={() => {
-                setOpen(false)
+                setOpen(false);
             }}
         >
             <ProductNav></ProductNav>
-            <div className="grid grid-cols-5 gap-4 mt-10 mb-12">
-                {load && (
+            <div className="grid grid-cols-5 gap-4 mt-10 pb-20">
+                {load ? (
                     <div>
                         <tr>
                             <td colSpan="5" className="text-center">
@@ -132,13 +153,14 @@ export default function Product() {
                             </td>
                         </tr>
                     </div>
-                )}
-                {products.map((post) =>
+                ):
+                posts.map((post) =>
                     postReturn(
                         post,
                         isProductCategory,
                         isSeasonCategory,
-                        isDiscount
+                        isDiscount,
+                        favorate
                     )
                 )}
             </div>

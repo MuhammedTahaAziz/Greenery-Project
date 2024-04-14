@@ -24,56 +24,90 @@ import EditProduct from "src/AdminDashboard/EditProduct/EditProduct";
 import ViewUsers from "./AdminDashboard/ViewUsers/ViewUsers";
 
 import useAdminDashboard from "src/Store/useAdminDashboardStore";
+import useCardShowStore from "./Store/useCardShowStore";
 
 function App() {
-  const { isAdminDashboard, setAdminDashboard } = useAdminDashboard();
-  console.log(isAdminDashboard);
-  let admin = isAdminDashboard;
-  // const navigate = useNavigate();
-  return (
-    <main className="">
-      <div className="mx-auto bg-white">
-        <BrowserRouter>
-          {admin ? (
+    const { isAdminDashboard, setAdminDashboard } = useAdminDashboard();
+    console.log(isAdminDashboard);
+    let admin = isAdminDashboard;
+    const { isOpen, setOpen } = useCardShowStore();
+    // const navigate = useNavigate();
+    return (
+        <main className="">
             <div
-              className=" relative w-full h-screen overflow-x-hidden scrollbar-hide"
-              name="Admin-Dashboard"
+                className="mx-auto bg-white"
+                onClick={() => {
+                    setOpen(false);
+                }}
             >
-              <Sidebar />
-              <Routes>
-                <Route path="/ViewProduct" element={<ViewProduct />} />
-                <Route path="/ViewUsers" element={<ViewUsers />} />
-                <Route path="/AddProduct" element={<AddProduct />} />
-                <Route path="/EditProduct" element={<EditProduct />} />
-              </Routes>
+                <BrowserRouter>
+                    {admin ? (
+                        <div
+                            className=" relative w-full h-screen overflow-x-hidden scrollbar-hide"
+                            name="Admin-Dashboard"
+                        >
+                            <Sidebar />
+                            <Routes>
+                                <Route
+                                    path="/ViewProduct"
+                                    element={<ViewProduct />}
+                                />
+                                <Route
+                                    path="/ViewUsers"
+                                    element={<ViewUsers />}
+                                />
+                                <Route
+                                    path="/AddProduct"
+                                    element={<AddProduct />}
+                                />
+                                <Route
+                                    path="/EditProduct"
+                                    element={<EditProduct />}
+                                />
+                            </Routes>
+                        </div>
+                    ) : (
+                        <div
+                            className=" relative w-full h-screen overflow-x-hidden scrollbar-hide"
+                            name="User-Interface"
+                        >
+                            <Navbar />
+                            <Routes>
+                                <Route path="/" element={<Home />} />
+                                <Route path="/Product" element={<Product />} />
+                                <Route path="/about" element={<About />} />
+                                <Route path="/SignIn" element={<SignIn />} />
+                                <Route path="/SignUp" element={<SignUp />} />
+                                <Route path="/Account" element={<Account />} />
+                                <Route path="/Saved" element={<Saved />} />
+                                <Route
+                                    path="/SingleProduct"
+                                    element={<SingleProduct />}
+                                />
+                                <Route
+                                    path="/ProductSearch"
+                                    element={<ProductSearch />}
+                                />
+                                <Route
+                                    path="/EditProfile"
+                                    element={<EditProfile />}
+                                />
+                                <Route
+                                    path="/ChangePassword"
+                                    element={<ChangePassword />}
+                                />
+                                <Route
+                                    path="/ForgetPassword"
+                                    element={<ForgetPassword />}
+                                />
+                            </Routes>
+                            <AddToCard></AddToCard>
+                        </div>
+                    )}
+                </BrowserRouter>
             </div>
-          ) : (
-            <div
-              className=" relative w-full h-screen overflow-x-hidden scrollbar-hide"
-              name="User-Interface"
-            >
-              <Navbar />
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/Product" element={<Product />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/SignIn" element={<SignIn />} />
-                <Route path="/SignUp" element={<SignUp />} />
-                <Route path="/Account" element={<Account />} />
-                <Route path="/Saved" element={<Saved />} />
-                <Route path="/SingleProduct" element={<SingleProduct />} />
-                <Route path="/ProductSearch" element={<ProductSearch />} />
-                <Route path="/EditProfile" element={<EditProfile />} />
-                <Route path="/ChangePassword" element={<ChangePassword />} />
-                <Route path="/ForgetPassword" element={<ForgetPassword />} />
-              </Routes>
-              <AddToCard></AddToCard>
-            </div>
-          )}
-        </BrowserRouter>
-      </div>
-    </main>
-  );
+        </main>
+    );
 }
 
 export default App;

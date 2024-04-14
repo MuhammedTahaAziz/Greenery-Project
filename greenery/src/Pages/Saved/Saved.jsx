@@ -4,12 +4,17 @@ import React, { useState, useEffect } from "react";
 import { useStateContext } from "src/Components/ContextProvider";
 import axiosClient from "src/axios-client";
 import useCardShowStore from "src/Store/useCardShowStore";
+import useFavouriteProducts from "src/Store/useFavouriteProducts";
+
 
 export default function Saved() {
-    const { saveds, setSaved } = useStateContext();
+    // const { saveds, setSaved } = useStateContext();
+    const { favouriteProducts, setFavouriteProduct } = useFavouriteProducts();
+    const [saved, setSaved] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const { isOpen, setOpen } = useCardShowStore();
+
 
     useEffect(() => {
         fetchData();
@@ -17,15 +22,18 @@ export default function Saved() {
 
     const fetchData = async () => {
         const payload = {
-            userID: parseInt(localStorage.getItem("ID")),
+            id: parseInt(localStorage.getItem("ID")),
         };
         try {
             console.log(payload);
             axiosClient
-                .post("/SavedProdcuts", payload)
+                .post("/fav_us_pro_get", payload)
                 .then(({ data }) => {
-                    setSaved(data.products);
-                    console.log(data.products);
+                    setSaved(data.product);
+                    // setFavouriteProduct(data.product);
+                    console.log("jjjjjjjjjjjjjjjjj");
+                    console.log(saved);
+                    // console.log(favouriteProducts);
                     setLoading(false);
                 })
                 .then((error) => {
@@ -37,6 +45,7 @@ export default function Saved() {
             // setLoading(false);
         }
     };
+    
 
     if (loading) {
         return <p>Loading...</p>;
@@ -45,7 +54,10 @@ export default function Saved() {
     if (error) {
         return <p>Error: {error}</p>;
     }
-
+    console.log(saved);
+    // setFavouriteProduct(saved);
+    console.log(favouriteProducts);
+    
     return (
         <div
             className="w-5/6 mx-auto mt-24 bg-transparent"
@@ -63,7 +75,7 @@ export default function Saved() {
                         </tr>
                     </div>
                 )}
-                {saveds.map((post) => (
+                {saved.map((post) => (
                     <Post
                         key={+post.id}
                         id={post.id}
@@ -71,7 +83,15 @@ export default function Saved() {
                         title={post.name}
                         price={post.price}
                         discount={post.Discound}
-                        state={post.is_favorited}
+                        // savedd={post.id == favorite.id?true:false}// daby awha bkayyyy
+                        savedd={
+                            window.location.pathname == "/Saved"
+                                ? true
+                                : false
+                        }
+                        onClick={fetchData}
+
+                        // state={post.is_favorited}
                     ></Post>
                 ))}
             </div>

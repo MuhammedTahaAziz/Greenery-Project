@@ -17,6 +17,33 @@ export default function SignupForm(second, method) {
 
     console.log(usernameValue);
 
+    const handleUsernameChange = (event) => {
+        const usernameValue = event.target.value.replace(
+            /[^0-9a-zA-Z.-\s]/g,
+            ""
+        ); // Remove any characters that are not numbers or lowercase letters
+        setUsernameValue(usernameValue); // Update the state with only numeric characters
+    };
+    const handlePhoneChange = (event) => {
+        const phoneValue = event.target.value.replace(/[^0-9]/g, ""); // Remove any non-numeric characters
+        setPhoneValue(phoneValue); // Update the state with only numeric characters
+    };
+    const handleEmailChange = (event) => {
+        const emailValue = event.target.value.replace(/[^0-9a-z.@]/g, ""); // Remove any characters that are not numbers or lowercase letters
+        setEmailValue(emailValue); // Update the state with only numeric characters
+    };
+    const handleAddressChange = (event) => {
+        const addressValue = event.target.value.replace(/[^0-9A-Za-z.-]/g, ""); // Remove any non-numeric characters
+        setAddressValue(addressValue); // Update the state with only numeric characters
+    };
+    const handlePasswordChange = (event) => {
+        const passwordValue = event.target.value.replace(
+            /[^0-9A-Za-z.-\s&$@]/g,
+            ""
+        ); // Remove any non-numeric characters
+        setPasswordValue(passwordValue); // Update the state with only numeric characters
+    };
+
     const navigate = useNavigate();
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -38,8 +65,10 @@ export default function SignupForm(second, method) {
                 console.log(data.Token);
                 console.log(data.user);
                 if (data.error) {
+                    alert(data.error);
                 } else {
                     navigate("/SignIn");
+                    alert("Account added Successfully");
                 }
             })
             .catch((error) => {
@@ -79,9 +108,8 @@ export default function SignupForm(second, method) {
                             type={"text"}
                             id={"signupUsername"}
                             name={`signupUsername`}
-                            onChange={(event) =>
-                                setUsernameValue(event.target.value)
-                            }
+                            value={usernameValue}
+                            onChange={handleUsernameChange}
                             autoComplete={`off`}
                         />
                     </div>
@@ -122,9 +150,8 @@ export default function SignupForm(second, method) {
                             type={"text"}
                             id={"signupPhone"}
                             name={`signupPhone`}
-                            onChange={(event) =>
-                                setPhoneValue(event.target.value)
-                            }
+                            value={phoneValue}
+                            onChange={handlePhoneChange}
                             autoComplete={`off`}
                             required
                         />
@@ -143,9 +170,8 @@ export default function SignupForm(second, method) {
                             type={"email"}
                             id={"signupEmail"}
                             name={`signupEmail`}
-                            onChange={(event) =>
-                                setEmailValue(event.target.value)
-                            }
+                            value={emailValue}
+                            onChange={handleEmailChange}
                             autoComplete={`off`}
                             required
                         />
@@ -163,9 +189,8 @@ export default function SignupForm(second, method) {
                             type={"text"}
                             id={"signupAddress"}
                             name={`signupAddress`}
-                            onChange={(event) =>
-                                setAddressValue(event.target.value)
-                            }
+                            value={addressValue}
+                            onChange={handleAddressChange}
                             autoComplete={`off`}
                             required
                         />
@@ -184,9 +209,9 @@ export default function SignupForm(second, method) {
                             type={"password"}
                             id={"signupPassword"}
                             name={`signupPassword`}
-                            onChange={(event) =>
-                                setPasswordValue(event.target.value)
-                            }
+                            value={passwordValue}
+                            onChange={handlePasswordChange}
+                            autoComplete={`off`}
                             required
                         />
                     </div>

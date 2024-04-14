@@ -2,13 +2,15 @@ import { Link } from "react-router-dom";
 import postData from "src/Forms/Post/data";
 import useEditProductStore from "../useEditProductStore";
 import Button from "src/Components/Button";
-import { useEffect, useState } from "react";
 import axiosClient from "src/axios-client";
+import { useEffect, useState } from "react";
 import EditProductImage from "src/Images/Edit-Product.png";
 import DeleteProductImage from "src/Images/Delete-Product.png";
 
 export default function FourSeasonFlower() {
     const { isIdProduct, setIdProduct } = useEditProductStore();
+
+    console.log(isIdProduct);
 
     const [posts, setPosts] = useState([]);
     const [load, setLoading] = useState(true);
@@ -22,7 +24,7 @@ export default function FourSeasonFlower() {
         try {
             axiosClient
                 .get("/product_filter_name")
-                .then(({data}) => {
+                .then(({ data }) => {
                     console.log(data);
                     setPosts(data);
                     setDataFetched(true);
@@ -37,12 +39,26 @@ export default function FourSeasonFlower() {
             // setLoading(false);
         }
     };
+    const deleteData = async (productId) => {
+        const payload = {
+            id: productId,
+        };
+        console.log(payload);
+        axiosClient
+            .post("/delete", payload)
+            .then(({ data }) => {
+                console.log(data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    };
 
     const fourSeasonFlowers = posts.filter(
         (post) =>
-            post.category_name === "flower" &&
-            post.filter_name === "fourseasons"
+            post.category_name === "flower" && post.filter_name === "fourseason"
     );
+    console.log(posts);
 
     return (
         <div className="">
@@ -104,7 +120,13 @@ export default function FourSeasonFlower() {
                                               className="size-full"
                                           />
                                       </Link>
-                                      <Button className="size-7 rounded-sm ml-2">
+                                      <Button
+                                          className="size-7 rounded-sm ml-2"
+                                          onClick={() => {
+                                              setIdProduct(post.id) ||
+                                                  deleteData(post.id);
+                                          }}
+                                      >
                                           <img
                                               src={DeleteProductImage}
                                               alt=""

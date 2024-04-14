@@ -24,7 +24,7 @@ export default function SpringFlower() {
         try {
             axiosClient
                 .get("/product_filter_name")
-                .then(({data}) => {
+                .then(({ data }) => {
                     console.log(data);
                     setPosts(data);
                     setDataFetched(true);
@@ -41,7 +41,7 @@ export default function SpringFlower() {
     };
     const deleteData = async (productId) => {
         const payload = {
-            id: productId
+            id: productId,
         };
         console.log(payload);
         axiosClient
@@ -122,7 +122,8 @@ export default function SpringFlower() {
                                       <Button
                                           className="size-7 rounded-sm ml-2"
                                           onClick={() => {
-                                              setIdProduct(post.id) || deleteData(post.id)
+                                              setIdProduct(post.id) ||
+                                                  deleteData(post.id);
                                           }}
                                       >
                                           <img

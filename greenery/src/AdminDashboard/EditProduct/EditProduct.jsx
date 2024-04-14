@@ -4,23 +4,6 @@ import { useState, useEffect } from "react";
 import axiosClient from "src/axios-client";
 
 export default function EditProduct() {
-    // const checkGift = (data) => {
-    //   if(data == "gift"){
-    //     setProductData({ ...productData, category: data,hasSess: false });
-    //     console.log(productData)
-    //   }else if(data != "gift" && productData.hasSess == false){
-    //     setProductData({ ...productData, category: data,hasSess:true,season: "spring" });
-    //     console.log(productData)
-    //   }else{
-    //     setProductData({ ...productData, category: data});
-    //     console.log(productData)
-    //   }
-    // }
-    // const handleChange = (e) => {
-    //   const { name, value } = e.target;
-    //   setProductData({ ...productData, [name]: value });
-    // };
-
     const [dataFetched, setDataFetched] = useState(false);
     const [posts, setPosts] = useState([]);
     const [load, setLoading] = useState(false);
@@ -39,6 +22,7 @@ export default function EditProduct() {
     const [discountValue, setDiscountValue] = useState();
     const [quantityValue, setQuantityValue] = useState();
     const [photoValue, setPhotoValue] = useState();
+    const [selectedCategory, setSelectedCategory] = useState("");
 
     useEffect(() => {
         // Fetch the product data for the specified productId
@@ -46,25 +30,27 @@ export default function EditProduct() {
             try {
                 const response = await axiosClient
                     .get(`/product_filter_name`)
-                    .then(({data}) => {
+                    .then(({ data }) => {
                         setPosts(data);
                         setDataFetched(true);
                         setLoading(false);
                         console.log(data);
-                        
-                        data.map((post) =>{
-                          if (post.id == isIdProduct) {
-                            setProductData(post);
-                            setIdValue(post.id);
-                            setTitleValue(post.name);
-                            setDescriptionValue(post.title);
-                            setCategoryValue(post.category_name);
-                            setSeasonValue(post.filter_name);
-                            setPriceValue(post.price);
-                            setDiscountValue(post.Discound);
-                            setQuantityValue(post.Quantity);
-                            // setPhotoValue("http://127.0.0.1:8000/products/" + post.image);
-                          }})
+
+                        data.map((post) => {
+                            if (post.id == isIdProduct) {
+                                setProductData(post);
+                                setIdValue(post.id);
+                                setTitleValue(post.name);
+                                setDescriptionValue(post.title);
+                                // setCategoryValue(post.category_name);
+                                setSelectedCategory(post.category_name);
+                                setSeasonValue(post.filter_name);
+                                setPriceValue(post.price);
+                                setDiscountValue(post.Discound);
+                                setQuantityValue(post.Quantity);
+                                // setPhotoValue("http://127.0.0.1:8000/products/" + post.image);
+                            }
+                        });
                     });
             } catch (error) {
                 console.error("Error fetching product data:", error);
@@ -75,14 +61,18 @@ export default function EditProduct() {
     }, [productData.id]);
 
     const handleSubmit = async (e) => {
-      e.preventDefault();
-      
-      const payload = new FormData();
-      payload.append("id", idValue);
-      payload.append("name", titleValue);
+        e.preventDefault();
+        const formData = {};
+        const payload = new FormData();
+        payload.append("id", idValue);
+        payload.append("name", titleValue);
         payload.append("title", descriptionValue);
         payload.append("category_name", categoryValue);
-        payload.append("filter_name", seasonValue);
+        if (selectedCategory != "gift") {
+            payload.append("filter_name", seasonValue);
+        } else {
+            payload.append("filter_name", "");
+        }
         payload.append("price", priceValue);
         payload.append("Discound", discountValue);
         payload.append("Quantity", quantityValue);
@@ -92,15 +82,15 @@ export default function EditProduct() {
             await axiosClient.post(`update`, payload);
             console.log("Product updated successfully");
             alert("Product updated successfully");
-            console.log(idValue, titleValue, descriptionValue, categoryValue, seasonValue,priceValue);
+            console.log(payload);
             // Optionally, you can redirect the user or perform any other action after successful update
         } catch (error) {
             console.error("Error updating product:", error);
         }
     };
-    
+    console.log(selectedCategory, seasonValue);
     return (
-      <div className="w-4/5 h-auto absolute right-0">
+        <div className="w-4/5 h-auto absolute right-0">
             <p className="text-3xl tracking-wider font-bold mt-10 ml-6">
                 Edit Product
                 <form
@@ -149,64 +139,91 @@ export default function EditProduct() {
                             />
                         </div>
 
-                        {/* <div className="flex flex-col gap-2">
-              <label htmlFor="category">Category</label>
-              <select
-                name="category"
-                className="appearance-none  w-full h-12 block font-bold rounded-[4px] px-4 outline-none full-shadow"
-                onChange={(e) => checkGift(e.target.value)}
-              >
-                        
-                <option className="bg-gray-200 text-black" value="flower">Flower</option>
-                <option className="bg-gray-200 text-black" value="tree">Tree</option>
-                <option className="bg-gray-200 text-black" value="gift">Gift</option>
-              </select>
-            </div>
-            <div className="flex flex-col gap-2">
-              {productData.hasSess ? <>
-              <label htmlFor="season">Season</label>
-              
-              <select
-              name="season"
-                className="appearance-none  w-full h-12 block font-bold rounded-[4px] px-4 outline-none full-shadow"
-                onChange={handleChange}
-              >
-                        
-                <option className="bg-gray-200 text-black" value="spring">Spring</option>
-                <option className="bg-gray-200 text-black" value="summer">Summer</option>
-                <option className="bg-gray-200 text-black" value="autumn">Autumn</option>
-                <option className="bg-gray-200 text-black" value="winter">Winter</option>
-                <option className="bg-gray-200 text-black" value="fourseason">Four Season</option>
-              </select>
-              </> : ""}
-            </div> */}
-
                         <div className="flex flex-col gap-2">
                             <label htmlFor="category">Category</label>
-                            <input
-                                type="text"
-                                className="w-full h-12 outline-none px-3 rounded-sm full-shadow"
-                                id="category"
+                            <select
                                 name="category"
-                                value={categoryValue}
-                                onChange={(event) =>
-                                    setCategoryValue(event.target.value)
-                                }
-                            />
+                                className="appearance-none  w-full h-12 block font-bold rounded-[4px] px-4 outline-none full-shadow"
+                                // defaultValue={selectedCategory}
+
+                                onChange={(event) => {
+                                    setCategoryValue(event.target.value);
+                                    setSelectedCategory(event.target.value);
+                                    !seasonValue&&setSeasonValue("spring");
+                                }}
+                            >
+                                <option
+                                    className="bg-gray-200 text-black"
+                                    value="flower"
+                                    selected={selectedCategory==="flower"}
+                                >
+                                    Flower
+                                </option>
+                                <option
+                                    className="bg-gray-200 text-black"
+                                    value="tree"
+                                    selected={selectedCategory==="tree"}
+                                >
+                                    Tree
+                                </option>
+                                <option
+                                    className="bg-gray-200 text-black"
+                                    value="gift"
+                                    selected={selectedCategory==="gift"}
+                                >
+                                    Gift
+                                </option>
+                            </select>
                         </div>
-                        <div className="flex flex-col gap-2">
-                            <label htmlFor="season">Season</label>
-                            <input
-                                type="text"
-                                className="w-full h-12 outline-none px-3 rounded-sm full-shadow"
-                                id="season"
-                                name="season"
-                                value={seasonValue}
-                                onChange={(event) =>
-                                    setSeasonValue(event.target.value)
-                                }
-                            />
-                        </div>
+
+                        {selectedCategory !== "gift" ? (
+                            <div className="flex flex-col gap-2">
+                                <label htmlFor="season">Season</label>
+
+                                <select
+                                    name="season"
+                                    className={`appearance-none  w-full h-12 block font-bold rounded-[4px] px-4 outline-none full-shadow `}
+                                    value={seasonValue}
+                                    onChange={(event) =>
+                                        setSeasonValue(event.target.value)
+                                    }
+                                >
+                                    <option
+                                        className="bg-gray-200 text-black"
+                                        value="spring"
+                                    >
+                                        Spring
+                                    </option>
+                                    <option
+                                        className="bg-gray-200 text-black"
+                                        value="summer"
+                                    >
+                                        Summer
+                                    </option>
+                                    <option
+                                        className="bg-gray-200 text-black"
+                                        value="autumn"
+                                    >
+                                        Autumn
+                                    </option>
+                                    <option
+                                        className="bg-gray-200 text-black"
+                                        value="winter"
+                                    >
+                                        Winter
+                                    </option>
+                                    <option
+                                        className="bg-gray-200 text-black"
+                                        value="fourseason"
+                                    >
+                                        Four Season
+                                    </option>
+                                </select>
+                            </div>
+                        ) : (
+                            <div className="w-full"></div>
+                        )}
+
                         <div className="flex flex-col gap-2">
                             <label htmlFor="price">Price</label>
                             <input
@@ -248,7 +265,7 @@ export default function EditProduct() {
                         </div>
                         <div className="flex flex-col gap-2">
                             <label htmlFor="photo">Photo</label>
-                            <div className="w-80 flex gap-2">
+                            <div className="w-full flex gap-2">
                                 <div className="w-full h-12 flex items-center px-3 text-sm outline-none full-shadow rounded-sm">
                                     <input
                                         type="file"
@@ -258,13 +275,14 @@ export default function EditProduct() {
                                         onChange={(event) =>
                                             setPhotoValue(event.target.files[0])
                                         }
+                                        required
                                     />
                                 </div>
-                                <img
+                                {/* <img
                                     // src={photoValue}
                                     alt=""
                                     className="size-12 rounded-sm"
-                                />
+                                /> */}
                             </div>
                         </div>
                     </div>

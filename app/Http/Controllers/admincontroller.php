@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Intervention\Image\Drivers\Gd\Driver;
 use Illuminate\Http\Request;
 use Intervention\Image\ImageManager;
-use Intervention\Image\Drivers\Gd\Driver;
 use Illuminate\Support\Facades\File;
-use App\Models\{product,images, User};
+use App\Models\{product,images, User,Shop};
 use Illuminate\Support\Facades\Validator;
 
 class admincontroller extends Controller
@@ -15,13 +15,9 @@ class admincontroller extends Controller
     // Inserting a product
     public function insert(Request $request)
     {
-      
-
-        
-
         if($request->category != "gift"){
             $validator = Validator::make($request->all(), [
-                'image' => 'required|image|mimes:jpeg,png,jpg',
+                'image' => 'required|image|mimes:jpeg,png,jpg,webp',
                 'title' => 'required|max:250',
                 'name' => 'required|max:20',
                 'price' => 'required|integer',
@@ -167,6 +163,20 @@ class admincontroller extends Controller
         $users = User::all();
         return $users;
     }
+
+
+    public function get_shop(){
+        $shop = shop::all();
+            
+        if ($shop->isNotEmpty()) {
+            return response()->json(["shop" => $shop]);
+        } else {
+            return response()->json(["error" => "No matching shop found"]);
+        }
+        
+        
+        }
+        
 }
 
 

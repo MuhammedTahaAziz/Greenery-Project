@@ -18,10 +18,11 @@ export default function AddToCard(className, onClick) {
     const { updateQuantity, setUpdateQuantity } = useUpdateQuantity();
 
     useEffect(() => {
-        if (isOpen) {
-            fetchData();
-        }
-    }, [isOpen]);
+      if (isOpen) {
+          
+          fetchData();
+      }
+  }, [isOpen]);
 
     const fetchData = async () => {
         const payload = {
@@ -39,59 +40,52 @@ export default function AddToCard(className, onClick) {
                 // const purchasedItemIds = data.purchased_items.map(item => item.id);
                 // setPurchase(purchasedProducts)
                 // setIds(purchasedItemIds)
+                totalUpdate();
             })
             .then((error) => {
                 setLoading(true);
                 // console.error(error)
             });
     };
-    const postPrice = (price, discount, quantity) => {
-        let total = 0;
+    // const postPrice = (price, discount, quantity) => {
+    //     let total = 0;
 
-        if (discount !== 0) return (total = total + discount + quantity);
-        else return (total = total + price + quantity);
-    };
+    //     if (discount !== 0) return (total = total + discount + quantity);
+    //     else return (total = total + price + quantity);
+    // };
     const totalUpdate = () => {
         let total = 0;
-        // console.log(products);
         products.map((post) => {
-            // console.log(
-            //     " total: " +
-            //         total +
-            //         " discound: " +
-            //         Number(post.Discound) +
-            //         " quantity: " +
-            //         Number(post.Quantity) +
-            //         " price: " +
-            //         Number(post.price)
-            // );
             Number(post.Discound) !== 0
                 ? (total =
-                      total + Number(post.Discound) + Number(post.Quantity))
-                : (total = total + Number(post.price) + Number(post.Quantity));
-
-            // console.log("current" + total);
+                      total + Number(post.Discound) * Number(post.Quantity))
+                : (total = total + Number(post.price) * Number(post.Quantity));
         });
         setTotalPrice(total);
         // return totalPrice;
     };
 
+    
+
     products.map((post) =>
-// (updateQuantity.id_shop) maybe null or undefined
+        // (updateQuantity.id_shop) maybe null or undefined
         updateQuantity.id_shop == undefined
             ? (post.Quantity = 1)
             : post.id == updateQuantity.id_shop
             ? (post.Quantity = updateQuantity.Quantity)
             : ""
     );
+
+    useEffect(()=>{
+      totalUpdate();
+    },[updateQuantity,products]);
     // if()
+
 
     // console.log(updateQuantity);
     // const total = totalPrice();
 
     const onOrder = () => {
-        // console.log("clicked");
-        // console.log(products);
         const payload = {
             user_id: parseInt(localStorage.getItem("ID")),
             products: products,
@@ -102,18 +96,16 @@ export default function AddToCard(className, onClick) {
             .post("/shop", payload)
             .then(({ data }) => {
                 setLoading(true);
-                console.log(data.products);
-                // const purchasedProducts = data.purchased_items.map(item => item.product);
-                // console.log('Purchased products:', purchasedProducts);
-                // const purchasedItemIds = data.purchased_items.map(item => item.id);
-                // setPurchase(purchasedProducts)
-                // setIds(purchasedItemIds)
+                data.error?alert(data.error):alert("Items ordered Successfully")
+                console.log(data);
+                setProducts([]);
             })
-            .then((error) => {
+            .catch(error => {
                 setLoading(true);
-                // console.error(error)
+                alert(error.message)
             });
     };
+
     return (
         <div
             className={`w-[30rem] h-screen bg-green-50 border-l-[1px] fixed right-0 bottom-0 z-10 flex flex-col ${
@@ -180,7 +172,7 @@ export default function AddToCard(className, onClick) {
                                 className="w-full h-16 bg-[#088516] text-white text-xl font-semibold tracking-wider"
                                 name={`orderBtn`}
                                 id={`orderBtn`}
-                                onClick={onOrder}
+                                onClick={onOrder }
                                 disabled={true}
                             >
                                 Order Now

@@ -11,7 +11,7 @@ export default function SingleProduct() {
     console.log(isSingleProduct);
     const [posts, setPosts] = useState([]);
     const [saved, setSaved] = useState(false);
-    const { isOpen , setOpen } = useCardShowStore();
+    const { isOpen, setOpen } = useCardShowStore();
     const [singleProducts, setSingleProducts] = useState({});
 
     // useEffect(() => {
@@ -53,25 +53,25 @@ export default function SingleProduct() {
     const fetchData = async () => {
         try {
             axiosClient
-                .get(`/producted/${isSingleProduct}`)
+                .get(`/producted/${localStorage.getItem('SingleProduct')}`)
                 .then(({ data }) => {
                     console.log(data);
                     setSingleProducts(data.singleProduct[0]);
+                    console.log(localStorage.getItem('userID'));
+                    console.log(localStorage.getItem('SingleProduct'));
                 })
                 .then((error) => {
-                    // setLoading(false);
-                    // console.error(error)
+                    console.error(error)
                 });
         } catch (error) {
-            // setLoading(false);
-            // setLoading(false);
+            console.error(error.message)
         }
     };
 
     const OnBuy = () => {
         const payload = {
             user_id: localStorage.getItem("ID"),
-            shop_id: isSingleProduct,
+            shop_id: localStorage.getItem('SingleProduct'),
             quantity: 1,
         };
         console.log(payload);
@@ -94,6 +94,9 @@ export default function SingleProduct() {
             name="reviewProduct"
             className="w-5/6 mx-auto mt-[7.5rem] scrollbar-hide bg-inherit mb-12 rever"
             method=""
+            onClick={() => {
+                setOpen(false);
+            }}
         >
             <div className="flex justify-between">
                 <div className="w-[31rem] h-[30rem] relative overflow-hidden rounded-lg">
@@ -105,22 +108,6 @@ export default function SingleProduct() {
                         }
                         alt="Post Img"
                     />
-                    <div className="w-16 h-16 flex justify-center items-center absolute bottom-0 right-0 bg-gray-200 rounded-tl-lg">
-                        <Button
-                            onClick={() => {
-                                setSaved(!saved);
-                            }}
-                            className={` w-10 h-10 `}
-                        >
-                            <img
-                                src={`${
-                                    saved ? "Save-Post.png" : "Unsave-Post.png"
-                                }`}
-                                className="w-full h-full"
-                                alt=""
-                            />
-                        </Button>
-                    </div>
                 </div>
                 <div className="w-2/4 h-[28rem] flex flex-col justify-between">
                     <div className="flex flex-col gap-8">
@@ -140,23 +127,23 @@ export default function SingleProduct() {
                         </p>
                     </div>
                     <div className="flex flex-col justify-between h-52 -mb-7">
-                        <div className="h-[7rem] flex flex-col justify-around gap-4">
+                        <div className="h-[8rem] flex flex-col justify-around gap-4">
                             <span
-                                className="text-4xl tracking-tight"
+                                className="text-4xl tracking-tight h-8"
                                 name="item-category"
                                 id="item-category"
                             >
                                 CATEGORY | {singleProducts.category_name}
                             </span>
                             <span
-                                className="text-4xl tracking-tight"
+                                className={`text-4xl h-8 tracking-tight ${singleProducts.category_name=="gift"?"text-white":""}`}
                                 name="item-season"
                                 id="item-season"
                             >
                                 SEASON | {singleProducts.filter_name}
                             </span>
                             <span
-                                className="text-2xl tracking-tight"
+                                className="text-2xl tracking-tight h-8"
                                 name="item-price"
                                 id="item-price"
                             >
@@ -177,14 +164,8 @@ export default function SingleProduct() {
                             </span>
                         </div>
                         <div className="flex justify-between -mb-2">
-                            {/* <QuantityBtn
-                                parentClassname="w-44 h-14 flex text-center rounded overflow-hidden border-[1px] border-gray-200"
-                                incClassName="w-10 bg-white text-xl font-semibold text-center"
-                                inpClassName="w-full h-full bg-white text-xl font-semibold text-center outline-none border-x-[1px] border-gray-200"
-                                decClassName="w-10 bg-white text-xl font-semibold text-center"
-                            /> */}
                             <Button
-                                className="w-full h-14 bg-[#087516] text-white text-2xl font-bold rounded"
+                                className="w-full h-14 -translate-y-[0.25rem] bg-[#087516] text-white text-2xl font-bold rounded"
                                 onClick={() => {
                                     OnBuy();
                                 }}

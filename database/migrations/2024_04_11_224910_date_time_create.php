@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('shop', function (Blueprint $table) {
-         $table->integer('order_id')->default(1);
+            $table->timestamp('dateTimeCreate')->useCurrent(); // Use current timestamp as default
         });
     }
 
@@ -22,7 +22,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('shop', function (Blueprint $table) {
-          $table->dropColumn("order_id");
-        });
+            $table->dropColumn('dateTimeCreate');        });
     }
 };
